@@ -68,6 +68,11 @@
     self.buttonsLayer.backgroundColor = [UIColor clearColor];
     [self addSubview:self.buttonsLayer];
     
+//    CAShapeLayer *layer = [[CAShapeLayer alloc] init];
+//    layer.frame = CGRectMake(0, 0, 110, 110);
+//    layer.backgroundColor = [UIColor blackColor].CGColor;
+//    [self.layer addSublayer:layer];
+    
 }
 
 #pragma mark Default settings
@@ -192,27 +197,73 @@
 
 - (void)setupImagesToButton:(UIButton *) button atIndex:(NSUInteger) index{
     
-    if (index <= self.step || !self.isActive) {
-        NSString *titleNormal = [button titleForState:UIControlStateNormal];
-        NSString *titleHighlighted = [button titleForState:UIControlStateHighlighted];
-        [button setTitle:titleNormal forState:UIControlStateHighlighted];
-        [button setTitle:titleHighlighted forState:UIControlStateNormal];
-        [button setBackgroundImage:self.buttonImageNormal forState:UIControlStateHighlighted];
-        [button setBackgroundImage:self.buttonImageHighLight forState:UIControlStateNormal];
-        [button setTitleColor:self.borderColor forState:UIControlStateHighlighted];
-        [button setTitleColor:self.progressBackgroundColor forState:UIControlStateNormal];
-    }else {
-        NSString *titleNormal = [button titleForState:UIControlStateNormal];
-        NSString *titleHighlighted = [button titleForState:UIControlStateHighlighted];
-        [button setTitle:titleNormal forState:UIControlStateNormal];
-        [button setTitle:titleHighlighted forState:UIControlStateHighlighted];
-        [button setBackgroundImage:self.buttonImageNormal forState:UIControlStateNormal];
-        [button setBackgroundImage:self.buttonImageHighLight forState:UIControlStateHighlighted];
-        [button setTitleColor:self.borderColor forState:UIControlStateNormal];
-        [button setTitleColor:self.progressBackgroundColor forState:UIControlStateHighlighted];
+    if (self.enableStepCounting) {
+        if (index <= self.step && self.isActive) {
+            NSString *titleNormal = [button titleForState:UIControlStateNormal];
+            NSString *titleHighlighted = [button titleForState:UIControlStateHighlighted];
+            [button setTitle:titleNormal forState:UIControlStateHighlighted];
+            [button setTitle:titleHighlighted forState:UIControlStateNormal];
+            [button setBackgroundImage:self.buttonImageNormal forState:UIControlStateHighlighted];
+            [button setBackgroundImage:self.buttonImageHighLight forState:UIControlStateNormal];
+            [button setTitleColor:self.borderColor forState:UIControlStateHighlighted];
+            [button setTitleColor:self.progressBackgroundColor forState:UIControlStateNormal];
+        }else {
+            NSString *titleNormal = [button titleForState:UIControlStateNormal];
+            NSString *titleHighlighted = [button titleForState:UIControlStateHighlighted];
+            [button setTitle:titleNormal forState:UIControlStateNormal];
+            [button setTitle:titleHighlighted forState:UIControlStateHighlighted];
+            [button setBackgroundImage:self.buttonImageNormal forState:UIControlStateNormal];
+            [button setBackgroundImage:self.buttonImageHighLight forState:UIControlStateHighlighted];
+            [button setTitleColor:self.borderColor forState:UIControlStateNormal];
+            [button setTitleColor:self.progressBackgroundColor forState:UIControlStateHighlighted];
+        }
+    }else{
+        CGFloat positionX = button.frame.origin.x;
+        if (positionX >= self.progressLength || !self.isActive) {
+            NSString *titleNormal = [button titleForState:UIControlStateNormal];
+            NSString *titleHighlighted = [button titleForState:UIControlStateHighlighted];
+            [button setTitle:titleNormal forState:UIControlStateNormal];
+            [button setTitle:titleHighlighted forState:UIControlStateHighlighted];
+            [button setBackgroundImage:self.buttonImageNormal forState:UIControlStateNormal];
+            [button setBackgroundImage:self.buttonImageHighLight forState:UIControlStateHighlighted];
+            [button setTitleColor:self.borderColor forState:UIControlStateNormal];
+            [button setTitleColor:self.progressBackgroundColor forState:UIControlStateHighlighted];
+        }else{
+            
+            NSString *titleNormal = [button titleForState:UIControlStateNormal];
+            NSString *titleHighlighted = [button titleForState:UIControlStateHighlighted];
+            [button setTitle:titleNormal forState:UIControlStateHighlighted];
+            [button setTitle:titleHighlighted forState:UIControlStateNormal];
+            [button setBackgroundImage:self.buttonImageNormal forState:UIControlStateHighlighted];
+            [button setBackgroundImage:self.buttonImageHighLight forState:UIControlStateNormal];
+            [button setTitleColor:self.borderColor forState:UIControlStateHighlighted];
+            [button setTitleColor:self.progressBackgroundColor forState:UIControlStateNormal];
+        }
     }
+
+}
+
+
+-(void)reverseButton:(UIButton *) button{
     
+//    if (button.selected == YES) {
+//        <#statements#>
+//    }
+    NSString *titleNormal = [button titleForState:UIControlStateNormal];
+    NSString *titleHighlighted = [button titleForState:UIControlStateHighlighted];
     
+    UIImage *imageNormal = [button imageForState:UIControlStateNormal];
+    UIImage *imageHighlighted = [button imageForState:UIControlStateHighlighted];
+    
+    UIColor *colorNormal = [button titleColorForState:UIControlStateNormal];
+    UIColor *colorHighlighted = [button titleColorForState:UIControlStateHighlighted];
+    
+    [button setTitle:titleNormal forState:UIControlStateHighlighted];
+    [button setTitle:titleHighlighted forState:UIControlStateNormal];
+    [button setBackgroundImage:imageNormal forState:UIControlStateHighlighted];
+    [button setBackgroundImage:imageHighlighted forState:UIControlStateNormal];
+    [button setTitleColor:colorNormal forState:UIControlStateHighlighted];
+    [button setTitleColor:colorHighlighted forState:UIControlStateNormal];
     
 }
 
