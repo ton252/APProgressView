@@ -28,7 +28,9 @@
     [super viewDidLoad];
     NSLog(@"View didload");
     
-    self.progressView.sectionCount = 2;
+//    self.progressView.sectionCount = 2;
+//    self.progressView.progressBackgroundColor = [UIColor greenColor];
+//    self.progressView.progressColor = [UIColor blueColor];
     
     self.stepper.value = (float)self.progressView.sectionCount;
 
@@ -43,8 +45,6 @@
 
     
     self.progressView.delegate = self;
-    NSLog(@"dsfdf");
-
     
     //[self drawBezierAnimate:YES];
 }
@@ -60,13 +60,13 @@
 
 }
 
--(void)setupButton:(UIButton *)button atIndex:(NSUInteger)index{
-    
-    [button setTitle:@"S" forState:UIControlStateHighlighted];
-    [button setTitle:@"S" forState:UIControlStateSelected];
-    [button setTitle:@"K" forState:UIControlStateNormal];
-    
-}
+//-(void)setupButton:(UIButton *)button atIndex:(NSUInteger)index{
+//    
+//    [button setTitle:@"S" forState:UIControlStateHighlighted];
+//    [button setTitle:@"S" forState:UIControlStateSelected];
+//    [button setTitle:@"K" forState:UIControlStateNormal];
+//    
+//}
 
 - (void)buttonDidSelected:(UIButton *) button atIndex:(NSUInteger) index{
     NSLog(@"Selected");

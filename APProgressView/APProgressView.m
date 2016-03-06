@@ -78,6 +78,7 @@
     _circleBorderWidth = 2.f;
     _generateBackgroundImagesAutomaticly = YES;
     _showButtons = YES;
+    _active = YES;
     _disableDeselectedButtons= YES;
     
     self.backgroundColor =[UIColor clearColor];
@@ -86,12 +87,9 @@
     _progressColor = [UIColor redColor];
     _borderColor = [UIColor greenColor];
 
-    //self.sectionCount = 5;
 }
 
 #pragma mark Setters
-
-
 
 -(void)setProgressBorderWidth:(CGFloat)progressBorderWidth{
     _progressBorderWidth = progressBorderWidth;
@@ -111,42 +109,12 @@
     [self setNeedsDisplay];
 }
 
-// Refresh buttons borders
--(void)refreshButtonBoarderWidth:(CGFloat) width{
-    
-    if (self.generateBackgroundImagesAutomaticly) {
-        for (UIButton *button in self.buttonsArray) {
-            button.layer.borderWidth = width;
-        }
-    }
-}
-
 // Set progress background color
 - (void)setProgressBackgroundColor:(UIColor *)progressBackgroundColor{
     
     _progressBackgroundColor = progressBackgroundColor;
     [self refreshButtonNormalColor:progressBackgroundColor];
     [self setNeedsDisplay];
-}
-
-// Refresh buttons normal state color
--(void)refreshButtonNormalColor:(UIColor *) color{
- 
-    if (self.generateBackgroundImagesAutomaticly) {
-        
-        UIImage *normalColor = [self imageWithColor:color];
-        
-        for (UIButton* button in self.buttonsArray) {
-            if (normalColor) {
-                [button setBackgroundImage:normalColor forState:UIControlStateNormal];
-                [button setBackgroundImage:normalColor forState:UIControlStateDisabled];
-
-                [button setTitleColor:color forState:UIControlStateHighlighted];
-                [button setTitleColor:color forState:UIControlStateSelected];
-                //[self unhighlightBorder:button];
-            }
-        }
-    }
 }
 
 // Set progress color in active state
@@ -158,40 +126,11 @@
     
 }
 
-// Refresh button highlight color
--(void)refreshButtonHighlightColor:(UIColor *) color{
-    
-    if (self.generateBackgroundImagesAutomaticly) {
-        UIImage *selectedColor = [self imageWithColor:color];
-        for (UIButton* button in self.buttonsArray) {
-            if (selectedColor) {
-                [button setBackgroundImage:selectedColor forState:UIControlStateHighlighted];
-                [button setBackgroundImage:selectedColor forState:UIControlStateSelected];
-                [self unhighlightBorder:button];
-            }
-        }
-    }
-}
-
 // Set border color
 - (void)setBorderColor:(UIColor *)borderColor{
     
     _borderColor = borderColor;
     [self refreshButtonBoarderColor:borderColor];
-}
-
-//Refresh button boarder color for state inactive
-- (void)refreshButtonBoarderColor:(UIColor *) color{
-    
-    if (self.generateBackgroundImagesAutomaticly) {
-        for (UIButton* button in self.buttonsArray) {
-            button.layer.borderColor = color.CGColor;
-            [button setTitleColor:color  forState:UIControlStateNormal];
-            [button setTitleColor:color forState:UIControlStateDisabled];
-            [self unhighlightBorder:button];
-        }
-    }
-    
 }
 
 //Set progress
@@ -202,18 +141,29 @@
 
 //Set step
 - (void)setStep:(NSUInteger)step{
-    _step = step;
-    [self updateButtonState];
-    [self setNeedsDisplay];
+    if (self.isActive) {
+        _step = step;
+        [self updateButtonState];
+        [self setNeedsDisplay];
+    }
+}
+
+//Set lap
+- (void)setLap:(NSUInteger)lap{
+    _lap = lap;
+    self.progress = 0.f;
+    self.step = 0;
 }
 
 
 //Set section count
 - (void)setSectionCount:(NSUInteger)sectionCount{
+    
     NSUInteger perviousValue = _sectionCount;
     _sectionCount = sectionCount;
     [self createButonsFromIndex:perviousValue toIndex:_sectionCount];
     [self updateButtonState];
+    
     [self setNeedsDisplay];
 }
 
@@ -237,6 +187,7 @@
     }else{
         for (UIButton *button in self.buttonsArray) {
             button.selected = NO;
+            button.userInteractionEnabled = NO;
             [self unhighlightBorder:button];
         }
     }
@@ -252,29 +203,87 @@
 - (void)setDelegate:(id<APProgressViewDelegate>)delegate{
     
     _delegate = delegate;
-    
     //Delegate method for setup Buttons
     if ([self.delegate respondsToSelector:@selector(setupButton:atIndex:)]){
-//        if (self.buttonsArray.count == 0) {
-//            [self createButonsFromIndex:0 toIndex:self.sectionCount];
-//        }else{
-            for (int i = 0; i < self.sectionCount; i++) {
-                UIButton * button = self.buttonsArray[i];
-                [self.delegate setupButton:button atIndex:i];
-            }
-//        }
+        for (int i = 0; i < self.sectionCount; i++) {
+            UIButton * button = self.buttonsArray[i];
+            [self.delegate setupButton:button atIndex:i];
+        }
         
         [self updateButtonState];
     }
 }
 
-- (void)setLap:(NSUInteger)lap{
+
+
+#pragma mark Refresh button methods
+
+// Refresh buttons borders
+-(void)refreshButtonBoarderWidth:(CGFloat) width{
     
-    _lap = lap;
-    self.progress = 0.f;
-    self.step = 0;
+    if (self.generateBackgroundImagesAutomaticly) {
+        for (UIButton *button in self.buttonsArray) {
+            button.layer.borderWidth = width;
+        }
+    }
 }
 
+
+// Refresh buttons normal state color
+-(void)refreshButtonNormalColor:(UIColor *) color{
+ 
+    if (self.generateBackgroundImagesAutomaticly) {
+        
+        UIImage *normalColor = [self imageWithColor:color];
+        
+        for (UIButton* button in self.buttonsArray) {
+            if (normalColor) {
+                [button setBackgroundImage:normalColor forState:UIControlStateNormal];
+                [button setBackgroundImage:normalColor forState:UIControlStateDisabled];
+
+                [button setTitleColor:color forState:UIControlStateHighlighted];
+                [button setTitleColor:color forState:UIControlStateSelected];
+                //[self unhighlightBorder:button];
+            }
+        }
+    }
+}
+
+
+// Refresh button highlight color
+-(void)refreshButtonHighlightColor:(UIColor *) color{
+    
+    if (self.generateBackgroundImagesAutomaticly) {
+        UIImage *selectedColor = [self imageWithColor:color];
+        for (UIButton* button in self.buttonsArray) {
+            if (selectedColor) {
+                [button setBackgroundImage:selectedColor forState:UIControlStateHighlighted];
+                [button setBackgroundImage:selectedColor forState:UIControlStateSelected];
+                [self unhighlightBorder:button];
+            }
+        }
+    }
+}
+
+
+
+//Refresh button boarder color for state inactive
+- (void)refreshButtonBoarderColor:(UIColor *) color{
+    
+    if (self.generateBackgroundImagesAutomaticly) {
+        for (UIButton* button in self.buttonsArray) {
+            button.layer.borderColor = color.CGColor;
+            [button setTitleColor:color  forState:UIControlStateNormal];
+            [button setTitleColor:color forState:UIControlStateDisabled];
+            [self unhighlightBorder:button];
+        }
+    }
+    
+}
+
+
+
+#pragma mark Cheking methods
 
 -(void)checkValues{
     
@@ -285,6 +294,8 @@
     }
     
 }
+
+
 
 #pragma mark Buttons settings
 
@@ -427,7 +438,7 @@
     
 }
 
-#warning Error
+
 - (void)updateButtonsFrames{
     
     for (int i = 0; i < self.buttonsArray.count; i++) {
@@ -591,90 +602,6 @@
     
     return image;
 }
-
-//- (void)setupImagesToButton:(UIButton *) button atIndex:(NSUInteger) index{
-//    
-//    if (self.enableStepCounting) {
-//        if (index <= self.step && self.isActive) {
-//            NSString *titleNormal = [button titleForState:UIControlStateNormal];
-//            NSString *titleHighlighted = [button titleForState:UIControlStateHighlighted];
-//            [button setTitle:titleNormal forState:UIControlStateHighlighted];
-//            [button setTitle:titleHighlighted forState:UIControlStateNormal];
-//            [button setBackgroundImage:self.buttonImageNormal forState:UIControlStateHighlighted];
-//            [button setBackgroundImage:self.buttonImageHighLight forState:UIControlStateNormal];
-//            [button setTitleColor:self.borderColor forState:UIControlStateHighlighted];
-//            [button setTitleColor:self.progressBackgroundColor forState:UIControlStateNormal];
-//        }else {
-//            NSString *titleNormal = [button titleForState:UIControlStateNormal];
-//            NSString *titleHighlighted = [button titleForState:UIControlStateHighlighted];
-//            [button setTitle:titleNormal forState:UIControlStateNormal];
-//            [button setTitle:titleHighlighted forState:UIControlStateHighlighted];
-//            [button setBackgroundImage:self.buttonImageNormal forState:UIControlStateNormal];
-//            [button setBackgroundImage:self.buttonImageHighLight forState:UIControlStateHighlighted];
-//            [button setTitleColor:self.borderColor forState:UIControlStateNormal];
-//            [button setTitleColor:self.progressBackgroundColor forState:UIControlStateHighlighted];
-//        }
-//    }else{
-//        CGFloat positionX = button.frame.origin.x;
-//        if (positionX >= self.progressLength || !self.isActive) {
-//            NSString *titleNormal = [button titleForState:UIControlStateNormal];
-//            NSString *titleHighlighted = [button titleForState:UIControlStateHighlighted];
-//            [button setTitle:titleNormal forState:UIControlStateNormal];
-//            [button setTitle:titleHighlighted forState:UIControlStateHighlighted];
-//            [button setBackgroundImage:self.buttonImageNormal forState:UIControlStateNormal];
-//            [button setBackgroundImage:self.buttonImageHighLight forState:UIControlStateHighlighted];
-//            [button setTitleColor:self.borderColor forState:UIControlStateNormal];
-//            [button setTitleColor:self.progressBackgroundColor forState:UIControlStateHighlighted];
-//        }else{
-//            
-//            NSString *titleNormal = [button titleForState:UIControlStateNormal];
-//            NSString *titleHighlighted = [button titleForState:UIControlStateHighlighted];
-//            [button setTitle:titleNormal forState:UIControlStateHighlighted];
-//            [button setTitle:titleHighlighted forState:UIControlStateNormal];
-//            [button setBackgroundImage:self.buttonImageNormal forState:UIControlStateHighlighted];
-//            [button setBackgroundImage:self.buttonImageHighLight forState:UIControlStateNormal];
-//            [button setTitleColor:self.borderColor forState:UIControlStateHighlighted];
-//            [button setTitleColor:self.progressBackgroundColor forState:UIControlStateNormal];
-//        }
-//    }
-//    
-//}
-//
-//- (void)createButtonImages{
-//    NSLog(@"Create image");
-//    
-//        if (self.externalCircles && self.internalCircles) {
-//            
-//            CGRect rectExternal = [self.externalCircles[0] CGRectValue];
-//            CGRect rectInternal = [self.internalCircles[0] CGRectValue];
-//            
-//            UIBezierPath* circleExternalPath = [UIBezierPath bezierPathWithOvalInRect:rectExternal];
-//            UIBezierPath* circleInternalPath = [UIBezierPath bezierPathWithOvalInRect:rectInternal];
-//            
-//            //UIControlStateHighlighted image
-//            UIGraphicsBeginImageContextWithOptions(rectExternal.size, NO, 3.0);
-//            [self.progressColor setFill];
-//            [circleExternalPath fill];
-//            UIImage *imageHighlighted  = UIGraphicsGetImageFromCurrentImageContext();
-//            UIGraphicsEndImageContext();
-//            
-//            //UIControlStateNormal image
-//            UIGraphicsBeginImageContextWithOptions(rectExternal.size, NO, 3.0);
-//            [self.borderColor setFill];
-//            [circleExternalPath fill];
-//            [self.progressBackgroundColor setFill];
-//            [circleInternalPath fill];
-//            UIImage *imageNormal= UIGraphicsGetImageFromCurrentImageContext();
-//            UIGraphicsEndImageContext();
-//            
-//            
-//            self.buttonImageNormal = imageNormal;
-//            self.buttonImageHighLight =imageHighlighted;
-//            
-//        }
-//    
-//}
-
 
 CGRect CGCirclesPosition(NSUInteger number, NSUInteger totalCount, CGFloat lineWidth, CGRect frame){
     
