@@ -26,11 +26,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    NSLog(@"View didload");
-    
-//    self.progressView.sectionCount = 2;
-//    self.progressView.progressBackgroundColor = [UIColor greenColor];
-//    self.progressView.progressColor = [UIColor blueColor];
     
     self.stepper.value = (float)self.progressView.sectionCount;
 
@@ -46,18 +41,6 @@
     
     self.progressView.delegate = self;
     
-    //[self drawBezierAnimate:YES];
-}
-
-
-- (IBAction)selectedAction:(UIButton *)sender {
-    
-    if (sender.selected == NO) {
-        sender.selected = YES;
-    }else{
-
-    }
-
 }
 
 //-(void)setupButton:(UIButton *)button atIndex:(NSUInteger)index{
@@ -70,42 +53,6 @@
 
 - (void)buttonDidSelected:(UIButton *) button atIndex:(NSUInteger) index{
     NSLog(@"Selected");
-}
-
-- (UIBezierPath *)bezierPath
-{
-    UIBezierPath *path = [UIBezierPath bezierPath];
-    
-    [path moveToPoint:CGPointMake(0.0, 0.0)];
-    
-    [path addLineToPoint:CGPointMake(200.0, 200.0)];
-    
-    return path;
-}
-
-- (void)drawBezierAnimate:(BOOL)animate
-{
-    UIBezierPath *bezierPath = [self bezierPath];
-    
-    CAShapeLayer *bezier = [[CAShapeLayer alloc] init];
-    
-    bezier.path          = bezierPath.CGPath;
-    bezier.strokeColor   = [UIColor blueColor].CGColor;
-    bezier.fillColor     = [UIColor clearColor].CGColor;
-    bezier.lineWidth     = 2.0;
-    bezier.strokeStart   = 0.0;
-    bezier.strokeEnd     = 0.0;
-    [self.view.layer addSublayer:bezier];
-    
-    if (animate)
-    {
-        CABasicAnimation *animateStrokeEnd = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
-        animateStrokeEnd.duration  = 0.2;
-        animateStrokeEnd.repeatCount = HUGE_VALF;
-        animateStrokeEnd.fromValue = [NSNumber numberWithFloat:0.0f];
-        animateStrokeEnd.toValue   = [NSNumber numberWithFloat:1.0f];
-        [bezier addAnimation:animateStrokeEnd forKey:@"strokeEndAnimation"];
-    }
 }
 
 -(UIButton *)setupButtonAtIndex:(NSUInteger)index{
@@ -122,12 +69,12 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
 - (IBAction)slideAction:(UISlider *)sender {
     self.progressView.progress = sender.value;
-    //NSLog(@"%f", self.progressView.progress);
-    
-    
 }
+
 - (IBAction)stepperAction:(UIStepper *)sender {
     self.progressView.sectionCount = (NSUInteger)sender.value;
 }
