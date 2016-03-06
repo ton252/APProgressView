@@ -14,21 +14,24 @@ IB_DESIGNABLE
 @interface APProgressView : UIView
 
 @property(assign,nonatomic,getter=isActive) IBInspectable BOOL active;
+@property(assign,nonatomic) IBInspectable BOOL showButtons;
+@property(assign, nonatomic) IBInspectable BOOL disableDeselectedButtons;
+@property(assign, nonatomic) BOOL generateBackgroundImagesAutomaticly;
+
 @property(assign,nonatomic) IBInspectable NSUInteger sectionCount;
-@property(assign,nonatomic) IBInspectable BOOL enableStepCounting;
 @property(assign,nonatomic) IBInspectable NSUInteger step;
 @property(assign,nonatomic) NSUInteger lap;
 @property(assign,nonatomic) IBInspectable float progress;
-@property(assign,nonatomic) IBInspectable BOOL enableButtons;
 
-
-@property(assign,nonatomic) IBInspectable CGFloat circleBorderWidth;
+@property(assign,nonatomic) IBInspectable CGFloat circleBorderWidth; //Update
 @property(assign,nonatomic) IBInspectable CGFloat progressBorderWidth;
 @property(assign,nonatomic) IBInspectable CGFloat progressWidth;
 
-@property(strong,nonatomic) IBInspectable UIColor *borderColor;
-@property(strong,nonatomic) IBInspectable UIColor *progressColor;
-@property(strong,nonatomic) IBInspectable UIColor *progressBackgroundColor;
+@property(strong,nonatomic) IBInspectable UIColor *borderColor;  //Update
+@property(strong,nonatomic) IBInspectable UIColor *progressColor;  //Update
+@property(strong,nonatomic) IBInspectable UIColor *progressBackgroundColor;  //Update
+
+
 
 @property(assign,nonatomic,readonly) float progressLength;
 
@@ -39,12 +42,9 @@ IB_DESIGNABLE
 
 @protocol APProgressViewDelegate<NSObject>
 
-@required
-- (UIButton *)setupButtonAtIndex:(NSUInteger) index;
-
 @optional
-- (BOOL)generateImagesAutomaticly;
-
+- (void)setupButton:(UIButton *) button atIndex:(NSUInteger) index;
+- (void)buttonDidSelected:(UIButton *) button atIndex:(NSUInteger) index;
 
 @end
 

@@ -14,10 +14,11 @@
 @property (weak, nonatomic) IBOutlet UIStepper *stepper;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentControl;
 @property (weak, nonatomic) IBOutlet UISwitch *switchButton;
-@property (weak, nonatomic) IBOutlet UISwitch *switchStep;
 @property (weak, nonatomic) IBOutlet UISwitch *active;
-@property (weak, nonatomic) IBOutlet UIButton *butotn;
 
+@property (weak, nonatomic) IBOutlet UIStepper *cirBoarder;
+@property (weak, nonatomic) IBOutlet UIStepper *prBoarder;
+@property (weak, nonatomic) IBOutlet UIStepper *prWidth;
 
 @end
 
@@ -25,33 +26,29 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.stepper.value = self.progressView.sectionCount;
+    NSLog(@"View didload");
+    
+    self.progressView.sectionCount = 2;
+    
+    self.stepper.value = (float)self.progressView.sectionCount;
+
     self.slider.value = self.progressView.progress;
-    self.switchButton.on = self.progressView.enableButtons;
-    self.switchStep.on = self.progressView.enableStepCounting;
+    self.switchButton.on = self.progressView.showButtons;
     self.segmentControl.selectedSegmentIndex = self.progressView.step;
     self.active.on = self.progressView.active;
     
-    self.progressView.delegate = self;
-    
-    double delayInSeconds = 6.0;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [UIView animateWithDuration:3.f animations:^{
-            self.progressView.progress = 0.5;
-        }];
+    self.cirBoarder.value = self.progressView.circleBorderWidth;
+    self.prBoarder.value = self.progressView.progressBorderWidth;
+    self.prWidth.value  = self.progressView.progressWidth;
 
-    });
     
-    [self drawBezierAnimate:YES];
+    self.progressView.delegate = self;
+    NSLog(@"dsfdf");
+
     
-    self.butotn.layer.borderColor = [UIColor blueColor].CGColor;
-    self.butotn.layer.borderWidth = 6.f;
-    self.butotn.layer.cornerRadius = self.butotn.frame.size.height/2.f; // this value vary as per your desire
-    self.butotn.clipsToBounds = YES;
-    
-    NSLog(@"Controller");
+    //[self drawBezierAnimate:YES];
 }
+
 
 - (IBAction)selectedAction:(UIButton *)sender {
     
@@ -61,6 +58,18 @@
 
     }
 
+}
+
+-(void)setupButton:(UIButton *)button atIndex:(NSUInteger)index{
+    
+    [button setTitle:@"S" forState:UIControlStateHighlighted];
+    [button setTitle:@"S" forState:UIControlStateSelected];
+    [button setTitle:@"K" forState:UIControlStateNormal];
+    
+}
+
+- (void)buttonDidSelected:(UIButton *) button atIndex:(NSUInteger) index{
+    NSLog(@"Selected");
 }
 
 - (UIBezierPath *)bezierPath
@@ -128,16 +137,29 @@
     self.progressView.step = sender.selectedSegmentIndex;
     
 }
+
+- (IBAction)changeCircleBoarder:(UIStepper *)sender {
+    
+    self.progressView.circleBorderWidth = sender.value;
+}
+
+- (IBAction)changeProgressBoarder:(UIStepper *)sender {
+    
+    self.progressView.progressBorderWidth = sender.value;
+}
+
+- (IBAction)changeProgressWidth:(UIStepper *)sender {
+    
+    self.progressView.progressWidth = sender.value;
+}
+
+
 - (IBAction)activeAction:(UISwitch *)sender {
     self.progressView.active = self.active.on;
-    [self.view setNeedsDisplay];
-}
-- (IBAction)activeStep:(UISwitch *)sender {
-    self.progressView.enableStepCounting = sender.on;
 }
 
 - (IBAction)activeButtons:(UISwitch *)sender {
-    self.progressView.enableButtons = sender.on;
+    self.progressView.showButtons = sender.on;
 }
 
 @end
