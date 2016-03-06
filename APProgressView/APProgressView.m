@@ -385,6 +385,7 @@
     [button addTarget:self action:@selector(selectStep:) forControlEvents:UIControlEventTouchUpInside];
     [button addTarget:self action:@selector(highlightBorder:) forControlEvents:UIControlEventTouchDown];
     [button addTarget:self action:@selector(unhighlightBorder:) forControlEvents:UIControlEventTouchUpInside];
+    [button addTarget:self action:@selector(unhighlightBorder:) forControlEvents:UIControlEventTouchDragExit];
     
     button.layer.borderWidth = self.circleBorderWidth;
     button.layer.borderColor = self.borderColor.CGColor;

@@ -128,7 +128,7 @@
                                     <userDefinedRuntimeAttribute type="number" keyPath="progress">
                                         <real key="value" value="0.0"/>
                                     </userDefinedRuntimeAttribute>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="disableDeselectedButtons" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="disableDeselectedButtons" value="NO"/>
                                     <userDefinedRuntimeAttribute type="number" keyPath="step">
                                         <integer key="value" value="0"/>
                                     </userDefinedRuntimeAttribute>
